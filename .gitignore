@@ -1,0 +1,4 @@
+project.db
+.env
+data/*.txt
+target/
