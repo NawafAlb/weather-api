@@ -8,8 +8,8 @@ CREATE TABLE user_data (
   longitude REAL NOT NULL,
   uv_index REAL,
   air_quality INTEGER,
-  timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
 -- Goes through the table trying to find an instance of matching latitude and longitude (Could be modified to take another variable)
 CREATE INDEX IF NOT EXISTS idx_lat_lon ON user_data (latitude, longitude);
+
