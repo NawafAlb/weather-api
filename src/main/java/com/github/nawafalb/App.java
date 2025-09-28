@@ -54,4 +54,8 @@ public class App {
         System.out.println("🌫 Air Quality Index (AQI): " + aqi);
         System.out.println("☀️ Current UV Index: " + uvIndex);
     }
+
+    private static void saveToDatabase(String lat, String lon, int airQuality, double uvIndex) {
+    
+    }
 }
