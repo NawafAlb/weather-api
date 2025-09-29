@@ -1,7 +1,7 @@
 -- Drops user_DataAirQuality table if it already exists
 DROP TABLE IF EXISTS user_DataAirQuality;
 
--- Creates user_DataAirQuality table with (User ID, latitude & longitude, air quality)
+-- Creates user_DataAirQuality table with (User ID, latitude & longitude, air quality, and the time the air quality was calculated)
 CREATE TABLE user_DataAirQuality (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   latitude REAL NOT NULL,
