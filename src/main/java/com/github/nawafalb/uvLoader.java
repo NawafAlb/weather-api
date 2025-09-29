@@ -60,7 +60,8 @@ public class UvLoader {
                 stmt.execute(deleteSQL);
             }
             // insert: uv filled, aqi = NULL
-            try (PreparedStatement pstmt = conn.prepareStatement(insertSQL)) {
+            try (Connection conn = DatabaseHelper.connect();
+                reparedStatement pstmt = conn.prepareStatement(insertSQL)) {
                 pstmt.setDouble(1, Double.parseDouble(lat));
                 pstmt.setDouble(2, Double.parseDouble(lon));
                 pstmt.setDouble(3, uvIndex);
