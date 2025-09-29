@@ -52,21 +52,19 @@ public class UvLoader {
     private static void saveToDatabaseUv(String lat, String lon, double uvIndex) {
         String url = "jdbc:sqlite:weather.db";
         String deleteSQL = "DELETE FROM user_DataUV;";
-        String insertSQL = "INSERT INTO user_DataUV(latitude, longitude, air_quality, recorded_at) VALUES(?,?,?,?,?);";
+        String insertSQL = "INSERT INTO user_DataUV(latitude, longitude, uv_index, recorded_at) VALUES(?,?,?,?);";
 
-        try (Connection conn = DriverManager.getConnection(url)) {
-            // wipe table
-            try (Statement stmt = conn.createStatement()) {
-                stmt.execute(deleteSQL);
-            }
             // insert: uv filled, aqi = NULL
             try (Connection conn = DatabaseHelper.connect();
-                reparedStatement pstmt = conn.prepareStatement(insertSQL)) {
+                Statement stmt = conn.createStatement();
+                PreparedStatement pstmt = conn.prepareStatement(insertSQL)) {
+
+                //Wipe user_DataAirQuality ute(deleteSQL);
+                
                 pstmt.setDouble(1, Double.parseDouble(lat));
                 pstmt.setDouble(2, Double.parseDouble(lon));
                 pstmt.setDouble(3, uvIndex);
-                pstmt.setObject(4, null); // AQI unknown in this loader
-                pstmt.setString(5, LocalDateTime.now().toString());
+                pstmt.setString(4, LocalDateTime.now().toString());
                 pstmt.executeUpdate();
             }
             // summary
