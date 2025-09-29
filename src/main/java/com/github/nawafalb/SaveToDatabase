@@ -1,22 +1,43 @@
+package com.github.nawafalb;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-private static void saveToDatabase(String lat, String lon, int airQuality, double uvIndex) {
-  String sql = "INSERT INTO user_data (latitude, longitude, uv_index, air_quality) VALUES (?, ?, ?, ?)";
+public class DatabaseService {
 
-  try (Connection conn = DatabaseHelper.connect();
-  PreparedStatement pstmt = conn.prepareStatement(sql)) {
+  public static void saveUvData(double latitude, double longitude, double uvIndex) {
+    String sql = "INSERT INTO user_DataUV (latitude, longitude, uv_index) VALUES (?, ?, ?)";
 
-    pstmt.setDouble(1, Double.parseDouble(lat));
-    pstmt.setDouble(2, Double.parseDouble(lon));
-    pstmt.setDouble(3, uvIndex);
-    pstmt.setInt(4, airQuality);
+    try (Connection conn = DatabaseHelper.connect();
+    PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
-    pstmt.executeUpdate();
-    System.out.println("Saved to database.");
+      pstmt.setDouble(1, latitude);
+      pstmt.setDouble(2, longitude);
+      pstmt.setDouble(3, uvIndex);
 
-  } catch (SQLException e) {
-    System.err.println("Database Error: " + e.getMessage());
+      pstmt.executeUpdate();
+
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
   }
+
+  public static void saveAirQualityData(double latitude, double longitude, double airQuality) {
+    String sql = "INSERT INTO user_DataAirQuality (latitude, longitude, air_quality) VALUES (?, ?, ?)";
+
+    try (Connection conn = DatabaseHelper.connect();
+    PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+      pstmt.setDouble(1, latitude);
+      pstmt.setDouble(2, longitude);
+      pstmt.setDouble(3, airQuality);
+
+      pstmt.executeUpdate();
+
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+  }
+}
 }
