@@ -1,8 +1,8 @@
 -- Drops user_data table if it already exists
-DROP TABLE IF EXISTS user_UVdata;
+DROP TABLE IF EXISTS user_UvData;
 
 -- Creates use_data table with (User ID, latitude & longitude, uv index, air quality, and the time the uv/air quality were calculated)
-CREATE TABLE user_UVdata (
+CREATE TABLE user_UvData (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   latitude REAL NOT NULL,
   longitude REAL NOT NULL,
@@ -10,7 +10,8 @@ CREATE TABLE user_UVdata (
 );
 
 -- Goes through the table trying to find an instance of matching latitude and longitude (Could be modified to take another variable)
-CREATE INDEX IF NOT EXISTS idx_lat_lon ON user_UVdata (latitude, longitude);
+CREATE INDEX IF NOT EXISTS idx_lat_lon ON user_UvData (latitude, longitude);
+
 
 
 
