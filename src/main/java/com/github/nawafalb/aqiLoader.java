@@ -50,8 +50,8 @@ public class Aqiloader {
 
     private static void saveToDatabaseAqi(String lat, String lon, int aqi) {
         String url = "jdbc:sqlite:weather.db";
-        String deleteSQL = "DELETE FROM user_data;";
-        String insertSQL = "INSERT INTO user_data(latitude, longitude, uv_index, air_quality, recorded_at) VALUES(?,?,?,?,?);";
+        String deleteSQL = "DELETE FROM user_DataAirQuality;";
+        String insertSQL = "INSERT INTO user_DataAirQuality(latitude, longitude, uv_index, air_quality, recorded_at) VALUES(?,?,?,?,?);";
 
         try (Connection conn = DriverManager.getConnection(url)) {
             // wipe table
@@ -59,7 +59,8 @@ public class Aqiloader {
                 stmt.execute(deleteSQL);
             }
             // insert: aqi filled, uv = NULL
-            try (PreparedStatement pstmt = conn.prepareStatement(insertSQL)) {
+            try (Connection conn = DatabaseHelper.connect();
+                PreparedStatement pstmt = conn.prepareStatement(insertSQL)) {
                 pstmt.setDouble(1, Double.parseDouble(lat));
                 pstmt.setDouble(2, Double.parseDouble(lon));
                 pstmt.setObject(3, null); // UV unknown in this loader
