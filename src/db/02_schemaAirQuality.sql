@@ -7,6 +7,7 @@ CREATE TABLE user_DataAirQuality (
   latitude REAL NOT NULL,
   longitude REAL NOT NULL,
   air_Quality REAL,
+  dateTime DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
 -- Goes through the table trying to find an instance of matching latitude and longitude (Could be modified to search for different variables)
