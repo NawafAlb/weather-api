@@ -44,15 +44,15 @@ public class UvLoader {
         JsonNode uvJson = mapper.readTree(uvResponse.body());
         double uvIndex = uvJson.path("result").path("uv").asDouble();
 
-        System.out.println("☀️ UV Index: " + uvIndex + " @ LAT=" + lat + ", LON=" + lon);
+        System.out.println("UV Index: " + uvIndex + " @ LAT=" + lat + ", LON=" + lon);
 
         saveToDatabaseUv(lat, lon, uvIndex);
     }
 
     private static void saveToDatabaseUv(String lat, String lon, double uvIndex) {
         String url = "jdbc:sqlite:weather.db";
-        String deleteSQL = "DELETE FROM user_data;";
-        String insertSQL = "INSERT INTO user_data(latitude, longitude, uv_index, air_quality, recorded_at) VALUES(?,?,?,?,?);";
+        String deleteSQL = "DELETE FROM user_DataUV;";
+        String insertSQL = "INSERT INTO user_DataUV(latitude, longitude, air_quality, recorded_at) VALUES(?,?,?,?,?);";
 
         try (Connection conn = DriverManager.getConnection(url)) {
             // wipe table
