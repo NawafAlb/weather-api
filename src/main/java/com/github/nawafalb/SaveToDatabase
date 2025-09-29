@@ -1,0 +1,22 @@
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+
+private static void saveToDatabase(String lat, String lon, int airQuality, double uvIndex) {
+  String sql = "INSERT INTO user_data (latitude, longitude, uv_index, air_quality) VALUES (?, ?, ?, ?)";
+
+  try (Connection conn = DatabaseHelper.connect();
+  PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+    pstmt.setDouble(1, Double.parseDouble(lat));
+    pstmt.setDouble(2, Double.parseDouble(lon));
+    pstmt.setDouble(3, uvIndex);
+    pstmt.setInt(4, airQuality);
+
+    pstmt.executeUpdate();
+    System.out.println("Saved to database.");
+
+  } catch (SQLException e) {
+    System.err.println("Database Error: " + e.getMessage());
+  }
+}
