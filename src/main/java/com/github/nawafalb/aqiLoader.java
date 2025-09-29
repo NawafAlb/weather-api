@@ -51,15 +51,11 @@ public class Aqiloader {
     private static void saveToDatabaseAqi(String lat, String lon, int aqi) {
         String url = "jdbc:sqlite:weather.db";
         String deleteSQL = "DELETE FROM user_DataAirQuality;";
-        String insertSQL = "INSERT INTO user_DataAirQuality(latitude, longitude, uv_index, air_quality, recorded_at) VALUES(?,?,?,?,?);";
+        String insertSQL = "INSERT INTO user_DataAirQuality(latitude, longitude, air_quality, recorded_at) VALUES(?,?,?,?,?);";
 
-        try (Connection conn = DriverManager.getConnection(url)) {
-            // wipe table
-            try (Statement stmt = conn.createStatement()) {
-                stmt.execute(deleteSQL);
-            }
             // insert: aqi filled, uv = NULL
             try (Connection conn = DatabaseHelper.connect();
+                Statement stmt = conn.createStatement();
                 PreparedStatement pstmt = conn.prepareStatement(insertSQL)) {
                 pstmt.setDouble(1, Double.parseDouble(lat));
                 pstmt.setDouble(2, Double.parseDouble(lon));
