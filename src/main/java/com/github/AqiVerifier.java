@@ -1,5 +1,57 @@
 package com.github;
 
+import java.nio.file.*;
+import java.sql.*;
+import java.util.*;
+
 public class AqiVerifier {
-    
+    public static void main(String[] args) {
+        String dbUrl = "jdbc:sqlite:weather.db";
+        String summaryFile = "summary_aqi.txt";
+
+        try {
+            // 1. Read summary file
+            Path path = Path.of(summaryFile);
+            if (!Files.exists(path)) {
+                System.err.println("Summary file not found: " + summaryFile);
+                return;
+            }
+
+            List<String> lines = Files.readAllLines(path);
+            int expectedCount = -1;
+            for (String line : lines) {
+                if (line.startsWith("Rows inserted:")) {
+                    expectedCount = Integer.parseInt(line.replace("Rows inserted:", "").trim());
+                }
+            }
+
+            if (expectedCount == -1) {
+                System.err.println("Could not find 'Rows inserted' in summary file");
+                return;
+            }
+
+            // 2. Count rows in user_DataAirQuality
+            int actualCount = 0;
+            try (Connection conn = DriverManager.getConnection(dbUrl);
+                 Statement stmt = conn.createStatement();
+                 ResultSet rs = stmt.executeQuery("SELECT COUNT(*) AS n FROM user_DataAirQuality")) {
+                if (rs.next()) {
+                    actualCount = rs.getInt("n");
+                }
+            }
+
+            // 3. Compare
+            System.out.println("Summary rows: " + expectedCount);
+            System.out.println("Database rows: " + actualCount);
+
+            if (expectedCount == actualCount) {
+                System.out.println("AQI verification PASSED");
+            } else {
+                System.out.println("AQI verification FAILED");
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }
