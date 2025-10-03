@@ -50,32 +50,33 @@ public class UvLoader {
     }
 
     private static void saveToDatabaseUv(String lat, String lon, double uvIndex) {
-        String url = "jdbc:sqlite:weather.db";
         String deleteSQL = "DELETE FROM user_DataUV;";
         String insertSQL = "INSERT INTO user_DataUV(latitude, longitude, uv_index, recorded_at) VALUES(?,?,?,?);";
 
-            // insert: uv filled, aqi = NULL
-            try (Connection conn = DatabaseHelper.connect();
-                Statement stmt = conn.createStatement();
-                PreparedStatement pstmt = conn.prepareStatement(insertSQL)) {
+        try (Connection conn = DatabaseHelper.connect();
+            Statement stmt = conn.createStatement();
+            PreparedStatement pstmt = conn.prepareStatement(insertSQL)) {
 
-                //Wipe user_DataAirQuality ute(deleteSQL);
-                
-                pstmt.setDouble(1, Double.parseDouble(lat));
-                pstmt.setDouble(2, Double.parseDouble(lon));
-                pstmt.setDouble(3, uvIndex);
-                pstmt.setString(4, LocalDateTime.now().toString());
-                pstmt.executeUpdate();
-            }
-            // summary
+        // clear table
+            stmt.executeUpdate(deleteSQL);
+
+        // insert new UV row
+            pstmt.setDouble(1, Double.parseDouble(lat));
+            pstmt.setDouble(2, Double.parseDouble(lon));
+            pstmt.setDouble(3, uvIndex);
+            pstmt.setString(4, LocalDateTime.now().toString());
+            pstmt.executeUpdate();
+
+        // summary (✅ moved inside main try)
             try (FileWriter w = new FileWriter("summary_uv.txt", false)) {
                 w.write("UV load complete\n");
                 w.write("Timestamp: " + LocalDateTime.now() + "\n");
                 w.write("Rows inserted: 1\n");
             }
+
             System.out.println("Saved UV to DB + summary_uv.txt");
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
-
+}

@@ -49,33 +49,32 @@ public class AqiLoader {
     }
 
     private static void saveToDatabaseAqi(String lat, String lon, int aqi) {
-        String url = "jdbc:sqlite:weather.db";
         String deleteSQL = "DELETE FROM user_DataAirQuality;";
         String insertSQL = "INSERT INTO user_DataAirQuality(latitude, longitude, air_quality, recorded_at) VALUES(?,?,?,?);";
 
-            // insert: aqi filled, uv = NULL
-            try (Connection conn = DatabaseHelper.connect();
-                Statement stmt = conn.createStatement();
-                PreparedStatement pstmt = conn.prepareStatement(insertSQL)) {
+        try (Connection conn = DatabaseHelper.connect();
+            Statement stmt = conn.createStatement();
+            PreparedStatement pstmt = conn.prepareStatement(insertSQL)) {
 
-                // clear tables
-                stmt.execute(deleteSQL);
-                
-                pstmt.setDouble(1, Double.parseDouble(lat));
-                pstmt.setDouble(2, Double.parseDouble(lon));
-                pstmt.setInt(3, aqi);
-                pstmt.setString(4, LocalDateTime.now().toString());
-                pstmt.executeUpdate();
-            }
-            // summary
+        // clear table (now uses executeUpdate)
+            stmt.executeUpdate(deleteSQL);
+
+            pstmt.setDouble(1, Double.parseDouble(lat));
+            pstmt.setDouble(2, Double.parseDouble(lon));
+            pstmt.setInt(3, aqi);
+            pstmt.setString(4, LocalDateTime.now().toString());
+            pstmt.executeUpdate();
+
+        // summary (moved inside the same try block)
             try (FileWriter w = new FileWriter("summary_aqi.txt", false)) {
                 w.write("AQI load complete\n");
                 w.write("Timestamp: " + LocalDateTime.now() + "\n");
                 w.write("Rows inserted: 1\n");
             }
+
             System.out.println("Saved AQI to DB + summary_aqi.txt");
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
-
+}
