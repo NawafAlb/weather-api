@@ -6,7 +6,7 @@ CREATE TABLE user_DataAirQuality (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   latitude REAL NOT NULL,
   longitude REAL NOT NULL,
-  air_Quality REAL,
+  air_quality REAL,
   dateTime DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
