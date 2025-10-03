@@ -17,7 +17,7 @@ import java.sql.Statement;
 import java.time.LocalDateTime;
 import java.io.FileWriter;
 
-public class Aqiloader {
+public class AqiLoader {
     public static void main(String[] args) throws Exception {
         Dotenv env = Dotenv.load();
 
