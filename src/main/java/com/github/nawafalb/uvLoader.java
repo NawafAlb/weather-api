@@ -55,7 +55,7 @@ public class UvLoader {
         String insertSQL = "INSERT INTO user_DataUV(latitude, longitude, uv_index, recorded_at) VALUES(?,?,?,?);";
 
             // insert: uv filled, aqi = NULL
-            try (Connection conn = DatabaseHelper.connect();
+            try (Connection conn = DataBaseHelper.connect();
                 Statement stmt = conn.createStatement();
                 PreparedStatement pstmt = conn.prepareStatement(insertSQL)) {
 

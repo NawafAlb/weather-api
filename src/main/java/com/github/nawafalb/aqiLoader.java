@@ -54,7 +54,7 @@ public class AqiLoader {
         String insertSQL = "INSERT INTO user_DataAirQuality(latitude, longitude, air_quality, recorded_at) VALUES(?,?,?,?);";
 
             // insert: aqi filled, uv = NULL
-            try (Connection conn = DatabaseHelper.connect();
+            try (Connection conn = DataBaseHelper.connect();
                 Statement stmt = conn.createStatement();
                 PreparedStatement pstmt = conn.prepareStatement(insertSQL)) {
 
