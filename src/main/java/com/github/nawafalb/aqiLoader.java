@@ -56,7 +56,7 @@ public class aqiLoader {
             Statement stmt = conn.createStatement();
             PreparedStatement pstmt = conn.prepareStatement(insertSQL)) {
 
-        // clear table (now uses executeUpdate)
+        // clear table 
             stmt.executeUpdate(deleteSQL);
 
             pstmt.setDouble(1, Double.parseDouble(lat));
@@ -65,7 +65,7 @@ public class aqiLoader {
             pstmt.setString(4, LocalDateTime.now().toString());
             pstmt.executeUpdate();
 
-        // summary (moved inside the same try block)
+        // summary 
             try (FileWriter w = new FileWriter("summary_aqi.txt", false)) {
                 w.write("AQI load complete\n");
                 w.write("Timestamp: " + LocalDateTime.now() + "\n");

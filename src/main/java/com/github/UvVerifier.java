@@ -10,7 +10,7 @@ public class UvVerifier {
         String summaryFile = "summary_uv.txt";
 
         try {
-            // 1. Read summary file
+            // Read summary file
             Path path = Path.of(summaryFile);
             if (!Files.exists(path)) {
                 System.err.println("Summary file not found: " + summaryFile);
@@ -30,7 +30,7 @@ public class UvVerifier {
                 return;
             }
 
-            // 2. Count rows in user_DataUV
+            // Count rows in user_DataUV
             int actualCount = 0;
             try (Connection conn = DriverManager.getConnection(dbUrl);
                  Statement stmt = conn.createStatement();
@@ -40,7 +40,7 @@ public class UvVerifier {
                 }
             }
 
-            // 3. Compare
+            // Compare
             System.out.println("Summary rows: " + expectedCount);
             System.out.println("Database rows: " + actualCount);
 
