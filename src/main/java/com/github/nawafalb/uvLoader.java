@@ -17,7 +17,7 @@ import java.sql.Statement;
 import java.time.LocalDateTime;
 import java.io.FileWriter;
 
-public class UvLoader {
+public class uvLoader {
     public static void main(String[] args) throws Exception {
         Dotenv env = Dotenv.load();
 
@@ -51,7 +51,7 @@ public class UvLoader {
 
     private static void saveToDatabaseUv(String lat, String lon, double uvIndex) {
         String deleteSQL = "DELETE FROM user_DataUV;";
-        String insertSQL = "INSERT INTO user_DataUV(latitude, longitude, uv_index, recorded_at) VALUES(?,?,?,?);";
+        String insertSQL = "INSERT INTO user_DataUV(latitude, longitude, uv_index, dateTime) VALUES(?,?,?,?);";
 
         try (Connection conn = DatabaseHelper.connect();
             Statement stmt = conn.createStatement();
@@ -67,7 +67,7 @@ public class UvLoader {
             pstmt.setString(4, LocalDateTime.now().toString());
             pstmt.executeUpdate();
 
-        // summary (✅ moved inside main try)
+        // summary
             try (FileWriter w = new FileWriter("summary_uv.txt", false)) {
                 w.write("UV load complete\n");
                 w.write("Timestamp: " + LocalDateTime.now() + "\n");
