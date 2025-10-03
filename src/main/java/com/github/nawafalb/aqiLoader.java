@@ -17,7 +17,7 @@ import java.sql.Statement;
 import java.time.LocalDateTime;
 import java.io.FileWriter;
 
-public class AqiLoader {
+public class aqiLoader {
     public static void main(String[] args) throws Exception {
         Dotenv env = Dotenv.load();
 
@@ -50,7 +50,7 @@ public class AqiLoader {
 
     private static void saveToDatabaseAqi(String lat, String lon, int aqi) {
         String deleteSQL = "DELETE FROM user_DataAirQuality;";
-        String insertSQL = "INSERT INTO user_DataAirQuality(latitude, longitude, air_quality, recorded_at) VALUES(?,?,?,?);";
+        String insertSQL = "INSERT INTO user_DataAirQuality(latitude, longitude, air_Quality, dateTime) VALUES(?,?,?,?);";
 
         try (Connection conn = DatabaseHelper.connect();
             Statement stmt = conn.createStatement();
