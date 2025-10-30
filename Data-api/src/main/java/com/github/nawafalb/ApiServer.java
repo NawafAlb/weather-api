@@ -15,7 +15,7 @@ import com.sun.net.httpserver.HttpServer;
 
 public class ApiServer {
 
-    private static final String DB_URL = "jdbc:sqlite:src/db/userData.db";
+    private static final String DB_URL = "jdbc:sqlite:Data-api/src/db/userData.db";
     private static final ObjectMapper mapper = new ObjectMapper();
 
     public static void main(String[] args) throws IOException {
