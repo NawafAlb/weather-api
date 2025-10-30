@@ -1,0 +1,3 @@
+AQI load complete
+Timestamp: 2025-10-29T15:31:30.770088
+Rows inserted: 1
