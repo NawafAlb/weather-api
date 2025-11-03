@@ -23,7 +23,7 @@ public class UiApiServer {
 
     public static void main(String[] args) throws Exception {
         HttpServer server = HttpServer.create(new InetSocketAddress(8082), 0);
-        System.out.println("✅ UI API (JDK HttpServer) on http://localhost:8082");
+        System.out.println("UI API (JDK HttpServer) on http://localhost:8082");
 
         server.createContext("/health", UiApiServer::healthHandler);
         server.createContext("/dashboard", UiApiServer::dashboardHandler);
