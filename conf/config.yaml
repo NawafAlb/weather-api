@@ -1,0 +1,51 @@
+apisix:
+  node_listen: 9080
+  enable_admin: true
+  admin_api_port: 9180
+  allow_admin:
+    - 127.0.0.1
+    - ::1
+
+deployment:
+  role: data_plane
+  role_data_plane:
+    config_provider: yaml
+
+routes:
+  - id: root
+    uri: /
+    upstream:
+      type: roundrobin
+      nodes:
+        "ui-api:8082": 1
+    plugins:
+      proxy-rewrite:
+        regex_uri:
+          - "^/$"
+          - "/ui/dashboard"
+
+  - id: data-route
+    uri: /data*
+    upstream:
+      type: roundrobin
+      nodes:
+        "data-api:8080": 1
+
+  - id: class-route
+    uri: /api*
+    upstream:
+      type: roundrobin
+      nodes:
+        "class-api:8081": 1
+
+  - id: ui-route
+    uri: /ui*
+    upstream:
+      type: roundrobin
+      nodes:
+        "ui-api:8082": 1
+    plugins:
+      cors:
+        allow_origins: "*"
+        allow_methods: "GET,POST,OPTIONS"
+        allow_headers: "*"

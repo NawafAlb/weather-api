@@ -1,3 +1,4 @@
+
 package com.github.nawafalb.uiapi;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -27,7 +28,8 @@ public class UiApiServer {
 
         server.createContext("/health", UiApiServer::healthHandler);
         server.createContext("/dashboard", UiApiServer::dashboardHandler);
-        server.createContext("/", UiApiServer::corsHandler); // preflight catch-all
+        // very simple CORS preflight
+        server.createContext("/", UiApiServer::corsHandler);
 
         server.setExecutor(null);
         server.start();
@@ -63,7 +65,7 @@ public class UiApiServer {
 
         try {
             HttpResponse<String> resp = client.send(req, HttpResponse.BodyHandlers.ofString());
-            if (resp.statusCode() / 100 != 2) {
+            if (resp.statusCode() >= 400) {
                 sendJson(ex, 502, jsonError("class-api returned status " + resp.statusCode()));
                 return;
             }
@@ -78,8 +80,7 @@ public class UiApiServer {
 
             double aqi = safeDouble(body, "aqi", Double.NaN);
             double uv  = safeDouble(body, "uv",  Double.NaN);
-            String summary = body.path("summary").asText("N/A");
-
+            String summary = body.hasNonNull("summary") ? body.get("summary").asText() : "N/A";
             if (Double.isNaN(aqi) || Double.isNaN(uv)) {
                 sendJson(ex, 502, jsonError("class-api JSON missing expected fields (aqi/uv)"));
                 return;
@@ -88,20 +89,23 @@ public class UiApiServer {
             ObjectNode root = mapper.createObjectNode();
             root.put("timestamp", Instant.now().toString());
             root.put("summary", summary);
-            root.put("alertLevel", overallAlert(aqi, uv)); // returns String
+
+            String aqiCat = aqiCategory(aqi);
+            String uvRisk = uvRisk(uv);
+            root.put("alertLevel", overallAlert(aqi, uv));
 
             ObjectNode cards = root.putObject("cards");
             ObjectNode air = cards.putObject("airQuality");
             air.put("aqi", round1(aqi));
-            air.put("category", aqiCategory(aqi));
+            air.put("category", aqiCat);
             air.put("advice", aqiAdvice(aqi));
-            air.put("color", aqiColor(aqiCategory(aqi)));
+            air.put("color", aqiColor(aqiCat));
 
             ObjectNode uvCard = cards.putObject("uv");
             uvCard.put("uvIndex", round1(uv));
-            uvCard.put("risk", uvRisk(uv));
+            uvCard.put("risk", uvRisk);
             uvCard.put("advice", uvAdvice(uv));
-            uvCard.put("color", uvColor(uvRisk(uv)));
+            uvCard.put("color", uvColor(uvRisk));
 
             sendJson(ex, 200, mapper.writeValueAsString(root));
 
@@ -113,22 +117,9 @@ public class UiApiServer {
         }
     }
 
-    private static String overallAlert(double aqi, double uv) {
-        // super simple: worst of the two
-        int score = 0;
-        if (aqi > 150) score += 2;
-        else if (aqi > 100) score += 1;
-
-        if (uv >= 8) score += 2;
-        else if (uv >= 6) score += 1;
-
-        switch (score) {
-            case 0: return "low";
-            case 1: return "moderate";
-            case 2: return "elevated";
-            case 3: return "high";
-            default: return "very-high";
-        }
+    private static JsonNode overallAlert(double aqi, double uv) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'overallAlert'");
     }
 
     private static void corsHandler(HttpExchange ex) throws IOException {
@@ -176,7 +167,6 @@ public class UiApiServer {
     }
 
     private static double round1(double x) { return Math.round(x * 10.0) / 10.0; }
-
     private static String aqiCategory(double aqi) {
         if (aqi <= 50)  return "Good";
         if (aqi <= 100) return "Moderate";

@@ -1,0 +1,40 @@
+version: "3.9"
+
+services:
+  apisix:
+    image: apache/apisix:3.5.0-debian
+    restart: unless-stopped
+    volumes:
+      - ./conf/config.yaml:/usr/local/apisix/conf/config.yaml:ro
+    ports:
+      - "9080:9080"   # Proxy (your API gateway)
+      - "9180:9180"   # Admin API (for debugging)
+    depends_on:
+      - data-api
+      - class-api
+      - ui-api
+    networks:
+      - weather-net
+
+  data-api:
+    build: ./Data-api
+    networks:
+      - weather-net
+
+  class-api:
+    build: ./class-api
+    environment:
+      - DATA_API_URL=http://data-api:8080
+    networks:
+      - weather-net
+
+  ui-api:
+    build: ./Ui-api
+    environment:
+      - CLASS_API_BASE_URL=http://class-api:8081
+    networks:
+      - weather-net
+
+networks:
+  weather-net:
+    driver: bridge

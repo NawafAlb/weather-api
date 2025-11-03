@@ -21,7 +21,7 @@
             <configuration>
               <transformers>
                 <transformer>
-                  <mainClass>com.github.nawafalb.uiapi.UIApiServer</mainClass>
+                  <mainClass>com.github.nawafalb.uiapi.UiApiServer</mainClass>
                 </transformer>
               </transformers>
             </configuration>
