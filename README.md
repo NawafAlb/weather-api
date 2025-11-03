@@ -12,6 +12,25 @@ Data API: mvn clean compile dependency:copy-dependencies exec:java "-Dexec.mainC
 
 UI API: mvn clean compile dependency:copy-dependencies exec:java "-Dexec.mainClass=com.github.nawafalb.uiapi.UiApiServer"
 
+OR you can directly run the files through vs code. 
+
+Start the Api server in Data-api.
+Then start the Class server in Class-Api.
+Then start the UI server in UI-api.
+
+Once the servers are running, use the following links to access the data.
+DATA-API- 
+http://localhost:8080/airquality
+http://localhost:8080/airquality/1
+http://localhost:8080/uv
+http://localhost:8080/uv/1
+
+CLASS-API- http://localhost:8081/combined
+
+UI-API- http://localhost:8082/dashboard
+
+API server must be started first then class and then ui
+
 ____________________________________________________________________________________________________________________________________
 
 Here is a list of all the API endpoints included in the project
