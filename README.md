@@ -6,15 +6,11 @@ Class API, a data API and a UI API.
 ____________________________________________________________________________________________________________________________________
 
 To run these files, run the following commands with Maven through PowerShell
-Class API: mvn clean compile
-dependency:copy-dependencies exec:java"-Dexec.mainClass=com.github.nawafalb.ClassApiServer"
+Class API: mvn clean compile dependency:copy-dependencies exec:java"-Dexec.mainClass=com.github.nawafalb.ClassApiServer"
 
-Data API: mvn
-clean compile dependency:copy-dependencies exec:java
-"-Dexec.mainClass=com.github.nawafalb.ApiServer" "-Dexec.classpathScope=compile"
+Data API: mvn clean compile dependency:copy-dependencies exec:java "-Dexec.mainClass=com.github.nawafalb.ApiServer" "-Dexec.classpathScope=compile"
 
-UI API: mvn clean compile
-dependency:copy-dependencies exec:java "-Dexec.mainClass=com.github.nawafalb.uiapi.UiApiServer"
+UI API: mvn clean compile dependency:copy-dependencies exec:java "-Dexec.mainClass=com.github.nawafalb.uiapi.UiApiServer"
 
 ____________________________________________________________________________________________________________________________________
 
