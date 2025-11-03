@@ -15,11 +15,20 @@ import com.sun.net.httpserver.HttpServer;
 
 public class ApiServer {
 
-    private static final String DB_URL = "jdbc:sqlite:Data-api/src/db/userData.db";
+    private static final String DB_URL = "jdbc:sqlite:src/db/userData.db";
     private static final ObjectMapper mapper = new ObjectMapper();
 
     public static void main(String[] args) throws IOException {
         int port = 8080;
+
+        // Load SQLite JDBC driver before used in handlers
+        try {
+            Class.forName("org.sqlite.JDBC");
+            System.out.println("SQLite driver loaded successfully.");
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        
         HttpServer server = HttpServer.create(new InetSocketAddress(port), 0);
 
         // AQI endpoints
