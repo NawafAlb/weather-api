@@ -28,6 +28,14 @@ public class ApiServer {
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
+
+        // Resequence IDs on startup
+        try (Connection conn = DriverManager.getConnection(DB_URL)) {
+            resequenceIds("user_DataAirQuality");
+            resequenceIds("user_DataUV");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         
         HttpServer server = HttpServer.create(new InetSocketAddress(port), 0);
 
@@ -167,6 +175,41 @@ public class ApiServer {
         exchange.sendResponseHeaders(statusCode, bytes.length);
         try (OutputStream os = exchange.getResponseBody()) {
             os.write(bytes);
+        }
+    }
+
+    // Resequence IDs in the user data tables to be consecutive starting from 1
+    private static void resequenceIds(String tableName) {
+        // Create a temporary table with ordered IDs
+        String tempTable = tableName + "_temp";
+        // SQL to resequence IDs
+        String sql = """
+        BEGIN TRANSACTION;
+        CREATE TEMP TABLE %s AS SELECT * FROM %s ORDER BY id;
+        DELETE FROM %s;
+        DELETE FROM sqlite_sequence WHERE name = '%s';
+        INSERT INTO %s (latitude, longitude, %s, dateTime)
+        SELECT latitude, longitude, %s, dateTime FROM %s;
+        DROP TABLE %s;
+        COMMIT;
+        """.formatted(
+            tempTable, tableName,
+            tableName,
+            tableName,
+            tableName,                                
+            tableName.contains("AirQuality") ? "air_quality" : "uv_index",
+            tableName.contains("AirQuality") ? "air_quality" : "uv_index",
+            tempTable,
+            tempTable
+        );
+
+        // Execute the resequencing
+        try (Connection conn = DriverManager.getConnection(DB_URL);
+        Statement stmt = conn.createStatement()) {
+            stmt.executeUpdate(sql);
+            System.out.println("Reindexed IDs for table " + tableName);
+        } catch (SQLException e) {
+        System.err.println("Failed to resequence IDs: " + e.getMessage());
         }
     }
 }
